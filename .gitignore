@@ -1,0 +1,3 @@
+img/*.png
+output/*.gif
+__pycache__
