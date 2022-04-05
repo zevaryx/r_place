@@ -20,7 +20,7 @@ height = config["bottom_right"][1] - config["top_left"][1]
 
 scale = config.get("scale", 1)
 frameskip = config.get("frameskip", 1)
-fps = config.get("fps", 60)
+fps = config.get("fps", 30)
 
 frametime = 1000 / fps
 
@@ -40,10 +40,10 @@ if __name__ == "__main__":
     if path.exists(final):
         unlink(final)
 
-    with imageio.get_writer(final, mode="I") as writer:
+    with imageio.get_writer(final, mode="I", fps=fps) as writer:
         for fname in tqdm(images[::frameskip], unit="im", desc="Creating timelapse"):
             image = imageio.imread(fname)
             im = Image.fromarray(image).crop(tuple(box)).resize(
                 (width * scale, height * scale), resample=Image.Resampling.BOX)
             image = np.array(im)
-            writer.append_data(image, duration=frametime)
+            writer.append_data(image)
