@@ -13,7 +13,7 @@ if not path.exists("config.json"):
 with open("config.json") as f:
     config = json.load(f)
 
-threads = cpu_count() - 2
+threads = max(cpu_count() - 2, 1)
 
 box = config["top_left"] + config["bottom_right"]
 scale = config["scale"]
