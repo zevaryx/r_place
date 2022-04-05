@@ -20,6 +20,15 @@ python process-slow.py
 
 `process-fast.py` ***will use*** a lot of resources, both CPU and RAM. If you have a low amount of both, use `process-slow.py`
 
+## Configuration Options
+
+| Option | Description | Required | Default |
+|--------|-------------|----------|---------|
+| `top_left` | Top left pixel of bounding box | Yes | |
+| `bottom_right` | Bottom right pixel of bounding box | Yes | |
+| `scale` | Resolution scaling factor | No | 1 |
+| `frameskip` | Skip `n` images between frames, 1 to not skip | No | 1 |
+
 ## **WARNING**
 Running `process-fast.py` script on a large area with a high scale ***will crash either the program or your computer***
 

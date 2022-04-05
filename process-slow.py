@@ -17,7 +17,8 @@ with open("config.json") as f:
 box = config["top_left"] + config["bottom_right"]
 width = config["bottom_right"][0] - config["top_left"][0]
 height = config["bottom_right"][1] - config["top_left"][1]
-scale = config["scale"]
+scale = config.get("scale", 1)
+frameskip = config.get("frameskip", 1)
 
 inp = "img" + sep
 outp = "output" + sep
@@ -36,7 +37,7 @@ if __name__ == "__main__":
         unlink(final)
 
     with imageio.get_writer(final, mode="I") as writer:
-        for fname in tqdm(images, unit="im", desc="Creating timelapse"):
+        for fname in tqdm(images[::frameskip], unit="im", desc="Creating timelapse"):
             image = imageio.imread(fname)
             im = Image.fromarray(image).crop(tuple(box)).resize(
                 (width * scale, height * scale), resample=Image.Resampling.BOX)

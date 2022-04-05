@@ -17,6 +17,7 @@ threads = max(cpu_count() - 2, 1)
 
 box = config["top_left"] + config["bottom_right"]
 scale = config["scale"]
+frameskip = config.get("frameskip", 1)
 
 inp = "img" + sep
 outp = "output" + sep
@@ -42,6 +43,7 @@ if __name__ == "__main__":
     if path.exists(final):
         unlink(final)
 
-    images = process_map(resize, images, max_workers=threads, unit="im",
+    images = process_map(resize, images[::frameskip], max_workers=threads, unit="im",
                          desc="Creating timelapse", chunksize=1)
-    images[0].save(final, append_images=images, save_all=True, optimize=False)
+    images[0].save(final, append_images=images, save_all=True,
+                   optimize=False)

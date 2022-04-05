@@ -2,3 +2,4 @@ img/*.png
 output/*.gif
 __pycache__
 config.json
+*.config.json

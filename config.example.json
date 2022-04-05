@@ -1,5 +1,6 @@
 {
     "top_left": [0, 0],
     "bottom_right": [100, 100],
-    "scale": 4
+    "scale": 4,
+    "frametime": 10
 }
