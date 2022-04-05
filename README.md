@@ -28,6 +28,7 @@ python process-slow.py
 | `bottom_right` | Bottom right pixel of bounding box | Yes | |
 | `scale` | Resolution scaling factor | No | 1 |
 | `frameskip` | Skip `n` images between frames, 1 to not skip | No | 1 |
+| `fps` | Target fps | No | 60 |
 
 ## **WARNING**
 Running `process-fast.py` script on a large area with a high scale ***will crash either the program or your computer***

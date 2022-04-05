@@ -17,8 +17,12 @@ with open("config.json") as f:
 box = config["top_left"] + config["bottom_right"]
 width = config["bottom_right"][0] - config["top_left"][0]
 height = config["bottom_right"][1] - config["top_left"][1]
+
 scale = config.get("scale", 1)
 frameskip = config.get("frameskip", 1)
+fps = config.get("fps", 60)
+
+frametime = 1000 / fps
 
 inp = "img" + sep
 outp = "output" + sep
@@ -42,4 +46,4 @@ if __name__ == "__main__":
             im = Image.fromarray(image).crop(tuple(box)).resize(
                 (width * scale, height * scale), resample=Image.Resampling.BOX)
             image = np.array(im)
-            writer.append_data(image)
+            writer.append_data(image, duration=frametime)

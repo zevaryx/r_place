@@ -16,18 +16,21 @@ with open("config.json") as f:
 threads = max(cpu_count() - 2, 1)
 
 box = config["top_left"] + config["bottom_right"]
-scale = config["scale"]
+width = config["bottom_right"][0] - config["top_left"][0]
+height = config["bottom_right"][1] - config["top_left"][1]
+
+scale = config.get("scale", 1)
 frameskip = config.get("frameskip", 1)
+fps = config.get("fps", 60)
+
+frametime = 1000 / fps
 
 inp = "img" + sep
 outp = "output" + sep
 
 
 def resize(image):
-    im = Image.open(image)
-    im = im.crop(tuple(box))
-    im = im.resize((im.width * scale, im.height * scale), resample=Image.Resampling.BOX)
-    return im
+    return Image.open(image).crop(tuple(box)).resize((width * scale, height * scale), resample=Image.Resampling.BOX)
 
 
 if __name__ == "__main__":
@@ -46,4 +49,4 @@ if __name__ == "__main__":
     images = process_map(resize, images[::frameskip], max_workers=threads, unit="im",
                          desc="Creating timelapse", chunksize=1)
     images[0].save(final, append_images=images, save_all=True,
-                   optimize=False)
+                   optimize=False, duration=frametime)
