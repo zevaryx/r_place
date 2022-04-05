@@ -22,6 +22,7 @@ height = config["bottom_right"][1] - config["top_left"][1]
 scale = config.get("scale", 1)
 frameskip = config.get("frameskip", 1)
 fps = config.get("fps", 50)
+name = config.get("name", "timelapse")
 
 frametime = 1000 / fps
 
@@ -30,7 +31,12 @@ outp = "output" + sep
 
 
 def resize(image):
-    return Image.open(image).crop(tuple(box)).resize((width * scale, height * scale), resample=Image.Resampling.BOX)
+    im = Image.open(image).crop(tuple(box)).resize(
+        (width * scale, height * scale), resample=Image.Resampling.BOX)
+    extrema = im.convert("L").getextrema()
+    if extrema in [(0, 0), (1, 1)]:
+        return None
+    return im
 
 
 if __name__ == "__main__":
@@ -42,11 +48,12 @@ if __name__ == "__main__":
         exit(1)
 
     images = sorted(glob(inp + "*.png"))
-    final = outp + "timelapse.gif"
+    final = outp + f"{name}.gif"
     if path.exists(final):
         unlink(final)
 
     images = process_map(resize, images[::frameskip], max_workers=threads, unit="im",
                          desc="Creating timelapse", chunksize=1)
-    images[0].save(final, append_images=images, save_all=True,
+    images = [x for x in images if x]
+    images[0].save(final, append_images=images[1:], save_all=True,
                    optimize=False, duration=frametime)

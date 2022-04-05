@@ -21,6 +21,7 @@ height = config["bottom_right"][1] - config["top_left"][1]
 scale = config.get("scale", 1)
 frameskip = config.get("frameskip", 1)
 fps = config.get("fps", 50)
+name = config.get("name", "timelapse")
 
 frametime = 1000 / fps
 
@@ -36,7 +37,7 @@ if __name__ == "__main__":
         exit(1)
 
     images = sorted(glob(inp + "*.png"))
-    final = outp + "timelapse.gif"
+    final = outp + f"{name}.gif"
     if path.exists(final):
         unlink(final)
 
@@ -45,5 +46,8 @@ if __name__ == "__main__":
             image = imageio.imread(fname)
             im = Image.fromarray(image).crop(tuple(box)).resize(
                 (width * scale, height * scale), resample=Image.Resampling.BOX)
+            extrema = im.convert("L").getextrema()
+            if extrema in [(0, 0), (1, 1)]:
+                continue
             image = np.array(im)
             writer.append_data(image)

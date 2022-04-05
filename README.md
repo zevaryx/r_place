@@ -29,6 +29,7 @@ python process-slow.py
 | `scale` | Resolution scaling factor | No | 1 |
 | `frameskip` | Skip `n` images between frames, 1 to not skip | No | 1 |
 | `fps` | Target fps | No | 50 |
+| `name` | Output name | No | `timelapse` |
 
 ## **WARNING**
 Running `process-fast.py` script on a large area with a high scale ***will crash either the program or your computer***
