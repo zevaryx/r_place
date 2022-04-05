@@ -1,12 +1,10 @@
 import json
 from glob import glob
-from os import mkdir, path, sep
-from multiprocessing import Pool, cpu_count
+from multiprocessing import cpu_count
+from os import mkdir, path, sep, unlink
 
 from PIL import Image
-from tqdm import tqdm
-
-threads = cpu_count() - 2
+from tqdm.contrib.concurrent import process_map
 
 if not path.exists("config.json"):
     print("Please copy `config.example.json` to `config.json` and edit it with what you need")
@@ -15,6 +13,8 @@ if not path.exists("config.json"):
 with open("config.json") as f:
     config = json.load(f)
 
+threads = cpu_count() - 2
+
 box = config["top_left"] + config["bottom_right"]
 scale = config["scale"]
 
@@ -22,24 +22,11 @@ inp = "img" + sep
 outp = "output" + sep
 
 
-def chunk(lst, n):
-    for i in range(0, n):
-        yield lst[i::n]
-
-
-def crop(index, images):
-    crops = []
-    for p in tqdm(images, unit="im", position=index):
-        im = Image.open(p)
-        cropped = im.crop(tuple(box))
-        cropped = cropped.resize((cropped.width * scale, cropped.height * scale),
-                                 resample=Image.Resampling.BOX)
-        crops.append(cropped)
-    return crops
-
-
-def crop_unpack(args):
-    return crop(*args)
+def resize(image):
+    im = Image.open(image)
+    im = im.crop(tuple(box))
+    im = im.resize((im.width * scale, im.height * scale), resample=Image.Resampling.BOX)
+    return im
 
 
 if __name__ == "__main__":
@@ -51,13 +38,11 @@ if __name__ == "__main__":
         exit(1)
 
     images = sorted(glob(inp + "*.png"))
+    tmp = "tmp" + sep
+    final = outp + "timelapse.gif"
+    if path.exists(final):
+        unlink(final)
 
-    args = [(i, c) for i, c in enumerate(chunk(images, threads))]
-    with Pool(threads) as pool:
-        crops = pool.map(crop_unpack, args)
-
-    frames = []
-    for c in crops:
-        frames += c
-
-    frames[0].save(outp + "timelapse.gif", append_images=frames[1:], save_all=True, optimize=False)
+    images = process_map(resize, images, max_workers=threads, unit="im",
+                         desc="Resizing images", chunksize=1)
+    images[0].save(final, append_images=images, save_all=True, optimize=True)
