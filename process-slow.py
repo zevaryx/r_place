@@ -20,7 +20,7 @@ height = config["bottom_right"][1] - config["top_left"][1]
 
 scale = config.get("scale", 1)
 frameskip = config.get("frameskip", 1)
-fps = config.get("fps", 30)
+fps = config.get("fps", 50)
 
 frametime = 1000 / fps
 

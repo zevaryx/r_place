@@ -3,5 +3,5 @@
     "bottom_right": [100, 100],
     "scale": 1,
     "frameskip": 1,
-    "fps": 60
+    "fps": 50
 }
