@@ -1,3 +1,4 @@
 img/*.png
 output/*.gif
 __pycache__
+config.json
