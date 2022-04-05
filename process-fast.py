@@ -38,11 +38,10 @@ if __name__ == "__main__":
         exit(1)
 
     images = sorted(glob(inp + "*.png"))
-    tmp = "tmp" + sep
     final = outp + "timelapse.gif"
     if path.exists(final):
         unlink(final)
 
     images = process_map(resize, images, max_workers=threads, unit="im",
-                         desc="Resizing images", chunksize=1)
-    images[0].save(final, append_images=images, save_all=True, optimize=True)
+                         desc="Creating timelapse", chunksize=1)
+    images[0].save(final, append_images=images, save_all=True, optimize=False)

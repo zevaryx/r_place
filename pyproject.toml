@@ -9,6 +9,7 @@ license = "Expat License"
 python = "^3.10"
 Pillow = "^9.1.0"
 tqdm = "^4.64.0"
+imageio = "^2.16.1"
 
 [tool.poetry.dev-dependencies]
 
